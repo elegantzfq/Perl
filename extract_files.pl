@@ -1,29 +1,52 @@
 
 my @args = @ARGV;
 my $src_dir = $args[0];
-my $des_dri = $args[1];
-my $extensions = $args[2];
+my $des_dir = $args[1];
+my $extensions = $args[1];
 
 # print parameters
 print "$_\n" for @args;
 
-my $extension_regexp = qr/(?<=.\.)mp4|avi|rmvb|wmv/;
-my @files;
-my $cnt = 0;
+my $extension_regexp = qr/(?<=.\.)$extensions/;
+#print "$extension_regexp\n";
+#my $cnt = 0;
 
-my @t = get_files($src_dir);
+my ($files,$cnt) = get_files($src_dir);
 
-print "$cnt\n";
-print "$_\n" for @t;
+#print "$cnt\n";
+#print "$_\n" for @$t;
 
-#print "@files\n";
-#for my $f (@files){
-#	print "$f\n";
-#}
+$filtered_files = extension_filter($files,$extension_regexp);
+
+print "$_\n" for @$filtered_files;
+
+sub extension_filter{
+	my $files = shift;
+	my $reg= shift;
+	my @filterd;
+	my $cnt = 0;
+	
+	for my $file (@$files){
+		if(-f "$file"){
+			if($file =~ $reg){
+				@filterd[$cnt++] = $file;
+			}
+		}else{
+			print "error:input is not a legal file.";
+			return;
+		}
+	}
+	if($cnt > 0){
+		return \@filterd;
+	}else{
+		return 0;
+	}
+}
 
 sub get_files{
 	my $diretory = shift;
 	stat @temp;
+	stat $cnt;
 	opendir(my $dh,"$diretory")
 		or die "Cannot open '$diretory' for reading: $!";
 	my @entries = grep {!/^\./} readdir($dh);
@@ -41,7 +64,7 @@ sub get_files{
 			get_files($file);
 		}
 	}
-	return @temp;
+	return \@temp,$cnt;
 	#print "==================================\n";
 }
 
