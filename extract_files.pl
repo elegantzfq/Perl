@@ -6,27 +6,32 @@ my @args = @ARGV;
 my $src_dir = $args[0];
 my $des_dir = $args[1];
 my $extensions = $args[2];
+my $copy_or_move = $args[3];
 
 # print parameters
 print "$_\n" for @args;
 
 my $extension_regexp = qr/(?<=.\.)$extensions/;
-#print "$extension_regexp\n";
 
 my ($files,$cnt) = get_files($src_dir);
-
-print "$cnt\n";
-
 $filtered_files = extension_filter($files,$extension_regexp);
-copy_files_to_dest($filtered_files,$des_dir);
 
-#print "$_\n" for @$filtered_files;
+if($copy_or_move == "move"){
+	move_files_to_dest($filtered_files,$des_dir);
+}else if($copy_or_move == "copy"){
+	copy_files_to_dest($filtered_files,$des_dir);
+}else{
+	print "error: Wrong operation type.";
+}
 
 # use File::Copy to move
 sub move_files_to_dest{
 	$files = shift;
 	$ds = shift;
-	
+	for $file (@$files){
+		$filename = extract_filename_from_dir($file);
+		move("$file","$ds/$filename");
+	}
 }
 
 sub copy_files_to_dest{
