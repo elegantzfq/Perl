@@ -1,6 +1,6 @@
 
 use File::Copy;
-use warnings;
+#use warnings;
 
 my @args = @ARGV;
 my $src_dir = $args[0];
@@ -11,17 +11,28 @@ my $copy_or_move = $args[3];
 # print parameters
 print "$_\n" for @args;
 
+$extensions =~ s/\|/\$\|/g;
+$extensions =~ s/$/\$/g;
 my $extension_regexp = qr/(?<=.\.)$extensions/;
+#print "$extension_regexp\n";
 
 my ($files,$cnt) = get_files($src_dir);
 $filtered_files = extension_filter($files,$extension_regexp);
+#print "$_\n" for @$filtered_files;
 
-if($copy_or_move == "move"){
-	move_files_to_dest($filtered_files,$des_dir);
-}else if($copy_or_move == "copy"){
-	copy_files_to_dest($filtered_files,$des_dir);
-}else{
-	print "error: Wrong operation type.";
+do_copy_or_move($copy_or_move,$filtered_files,$des_dir);
+
+sub do_copy_or_move{
+	my $flag = shift;
+	my $files_do = shift;
+	my $des = shift;
+	if($flag eq "move"){
+		move_files_to_dest($files_do,$des);
+	}elsif($flag eq "copy"){
+		copy_files_to_dest($files_do,$des);
+	}else{
+		print "error: Wrong operation type.";
+	}
 }
 
 # use File::Copy to move
