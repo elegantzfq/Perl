@@ -15,7 +15,7 @@ my $extension_regexp = qr/(?<=.\.)$extensions/;
 
 my ($files,$cnt) = get_files($src_dir);
 
-#print "$cnt\n";
+print "$cnt\n";
 
 $filtered_files = extension_filter($files,$extension_regexp);
 copy_files_to_dest($filtered_files,$des_dir);
