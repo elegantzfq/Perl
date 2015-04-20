@@ -1,0 +1,17 @@
+<html>
+	<head>
+	<script type="text/javascript">
+	function btn_click(){
+		var name = document.getElementById("name").value;
+		var phone = document.getElementById("phone").value;
+		document.getElementById("info").innerHTML="Hello,"+name+",your number is:"+phone;
+	}
+	</script>
+	</head>
+	<body>
+	Name:<input type="text" id="name"/>
+	Phone:<input type="text" id="phone"/>
+	<button id="btn" onclick="btn_click()">click</button>
+	<h1 id="info"></h1>
+	</body>
+</html>

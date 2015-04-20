@@ -1,24 +1,53 @@
 
+use File::Copy;
+use warnings;
+
 my @args = @ARGV;
 my $src_dir = $args[0];
 my $des_dir = $args[1];
-my $extensions = $args[1];
+my $extensions = $args[2];
 
 # print parameters
 print "$_\n" for @args;
 
 my $extension_regexp = qr/(?<=.\.)$extensions/;
 #print "$extension_regexp\n";
-#my $cnt = 0;
 
 my ($files,$cnt) = get_files($src_dir);
 
 #print "$cnt\n";
-#print "$_\n" for @$t;
 
 $filtered_files = extension_filter($files,$extension_regexp);
+copy_files_to_dest($filtered_files,$des_dir);
 
-print "$_\n" for @$filtered_files;
+#print "$_\n" for @$filtered_files;
+
+# use File::Copy to move
+sub move_files_to_dest{
+	$files = shift;
+	$ds = shift;
+	
+}
+
+sub copy_files_to_dest{
+	$files = shift;
+	$ds = shift;
+	for $file (@$files){
+		$filename = extract_filename_from_dir($file);
+		copy("$file","$ds/$filename");
+	}
+}
+
+sub extract_filename_from_dir{
+	my $dir = shift;
+	my $reg = qr/(?<=\/)?[^\/]+$/;
+	if($dir =~ $reg){
+		$filename = $&;
+		return $filename;
+	}else{
+		return "";
+	}
+}
 
 sub extension_filter{
 	my $files = shift;
@@ -68,14 +97,7 @@ sub get_files{
 	#print "==================================\n";
 }
 
-
-
-
-
-
-
-
-
-
-
-
+# must use / instead of \ in the path
+sub file_cp_test{
+	copy("C:/Work/Education/Perl/VisualizingData.pdf","C:/Work/Education/VisualizingData.pdf")  or die "Copy failed: $!";
+}
