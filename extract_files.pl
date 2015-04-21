@@ -11,16 +11,19 @@ my $copy_or_move = $args[3];
 # print parameters
 print "$_\n" for @args;
 
-$extensions =~ s/\|/\$\|/g;
-$extensions =~ s/$/\$/g;
-my $extension_regexp = qr/(?<=.\.)$extensions/;
+if($extensions eq "*"){
+	$extensions = "[^\.,/,\\,:]+";
+}else{
+	$extensions =~ s/\|/\$\|/g;
+}
+
+my $extension_regexp = qr/(?<=.\.)($extensions$)/;
 #print "$extension_regexp\n";
 
-my ($files,$cnt) = get_files($src_dir);
-$filtered_files = extension_filter($files,$extension_regexp);
-#print "$_\n" for @$filtered_files;
+my ($files,$cnt) = get_files($src_dir,$extension_regexp);
+print "$_\n" for @$files;
 
-do_copy_or_move($copy_or_move,$filtered_files,$des_dir);
+#do_copy_or_move($copy_or_move,$files,$des_dir);
 
 sub do_copy_or_move{
 	my $flag = shift;
@@ -70,30 +73,24 @@ sub extract_filename_from_dir{
 }
 
 sub extension_filter{
-	my $files = shift;
+	my $file = shift;
 	my $reg= shift;
-	my @filterd;
-	my $cnt = 0;
 	
-	for my $file (@$files){
-		if(-f "$file"){
-			if($file =~ $reg){
-				@filterd[$cnt++] = $file;
-			}
+	if(-f "$file"){
+		if("$file" =~ $reg){
+			return 1;
 		}else{
-			print "error:input is not a legal file.";
-			return;
+			return 0;
 		}
-	}
-	if($cnt > 0){
-		return \@filterd;
 	}else{
-		return 0;
+		print "error:input is not a legal file.";
+		return -1;
 	}
 }
 
 sub get_files{
 	my $diretory = shift;
+	my $reg = shift;
 	stat @temp;
 	stat $cnt;
 	opendir(my $dh,"$diretory")
@@ -107,10 +104,12 @@ sub get_files{
 		#print "$file\n";
 		if(-f "$file"){
 			#print "$file\n";
-			@temp[$cnt++] = "$file";
+			if(extension_filter($file,$reg)){
+				@temp[$cnt++] = "$file";
+			}
 		}
 		if(-d "$file"){
-			get_files($file);
+			get_files($file,$reg);
 		}
 	}
 	return \@temp,$cnt;
