@@ -27,8 +27,10 @@ sub do_copy_or_move{
 	my $files_do = shift;
 	my $des = shift;
 	if($flag eq "move"){
+		print "move files to $des \n";
 		move_files_to_dest($files_do,$des);
 	}elsif($flag eq "copy"){
+		print "copy files to $des \n";
 		copy_files_to_dest($files_do,$des);
 	}else{
 		print "error: Wrong operation type.";
@@ -41,6 +43,7 @@ sub move_files_to_dest{
 	$ds = shift;
 	for $file (@$files){
 		$filename = extract_filename_from_dir($file);
+		print "moving $file ...\n";
 		move("$file","$ds/$filename");
 	}
 }
@@ -50,6 +53,7 @@ sub copy_files_to_dest{
 	$ds = shift;
 	for $file (@$files){
 		$filename = extract_filename_from_dir($file);
+		print "copying $file ...\n";
 		copy("$file","$ds/$filename");
 	}
 }
@@ -111,9 +115,4 @@ sub get_files{
 	}
 	return \@temp,$cnt;
 	#print "==================================\n";
-}
-
-# must use / instead of \ in the path
-sub file_cp_test{
-	copy("C:/Work/Education/Perl/VisualizingData.pdf","C:/Work/Education/VisualizingData.pdf")  or die "Copy failed: $!";
 }
