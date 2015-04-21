@@ -30,8 +30,11 @@ my $extension_regexp = qr/(?<=.\.)($extensions$)/;
 
 my ($files,$cnt) = get_files($src_dir,$extension_regexp);
 #print "$_\n" for @$files;
+print "matched files: $cnt\n\n";
 
 do_copy_or_move($copy_or_move,$files,$des_dir);
+
+print "\n";
 
 sub do_copy_or_move{
 	my $flag = shift;
