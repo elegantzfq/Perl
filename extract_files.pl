@@ -9,7 +9,15 @@ my $extensions = $args[2];
 my $copy_or_move = $args[3];
 
 # print parameters
+print "\n***************\tParameters\t****************\n";
 print "$_\n" for @args;
+print "***************\tEnd of Parameters\t****************\n\n";
+
+# check parameter
+if(! (-d "$des_dir" && -d $src_dir ) ){
+	print "the source/destination directory does not exist.\n\n";
+	exit -1;
+}
 
 if($extensions eq "*"){
 	$extensions = "[^\.,/,\\,:]+";
@@ -21,19 +29,20 @@ my $extension_regexp = qr/(?<=.\.)($extensions$)/;
 #print "$extension_regexp\n";
 
 my ($files,$cnt) = get_files($src_dir,$extension_regexp);
-print "$_\n" for @$files;
+#print "$_\n" for @$files;
 
-#do_copy_or_move($copy_or_move,$files,$des_dir);
+do_copy_or_move($copy_or_move,$files,$des_dir);
 
 sub do_copy_or_move{
 	my $flag = shift;
 	my $files_do = shift;
 	my $des = shift;
+	
 	if($flag eq "move"){
-		print "move files to $des \n";
+		print "move files to $des...... \n\n";
 		move_files_to_dest($files_do,$des);
 	}elsif($flag eq "copy"){
-		print "copy files to $des \n";
+		print "copy files to $des...... \n\n";
 		copy_files_to_dest($files_do,$des);
 	}else{
 		print "error: Wrong operation type.";
@@ -46,7 +55,7 @@ sub move_files_to_dest{
 	$ds = shift;
 	for $file (@$files){
 		$filename = extract_filename_from_dir($file);
-		print "moving $file ...\n";
+		print "moving $file to $ds\n";
 		move("$file","$ds/$filename");
 	}
 }
@@ -56,7 +65,7 @@ sub copy_files_to_dest{
 	$ds = shift;
 	for $file (@$files){
 		$filename = extract_filename_from_dir($file);
-		print "copying $file ...\n";
+		print "copying $file to $ds\n";
 		copy("$file","$ds/$filename");
 	}
 }
