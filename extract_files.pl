@@ -2,11 +2,11 @@
 use File::Copy;
 #use warnings;
 
-my @args = @ARGV;
-my $src_dir = $args[0];
-my $des_dir = $args[1];
-my $extensions = $args[2];
-my $copy_or_move = $args[3];
+my @args = @ARGV;				# get all arguments
+my $src_dir = $args[0];			# source directory
+my $des_dir = $args[1];			# destination directory
+my $extensions = $args[2];		# extensions to match
+my $copy_or_move = $args[3];	# indicates copy or move
 
 # print parameters
 print "\n***************\tParameters\t****************\n";
