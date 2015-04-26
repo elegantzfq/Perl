@@ -65,9 +65,13 @@ sub copy_files_to_dest{
 	$files = shift;
 	$ds = shift;
 	for $file (@$files){
-		$filename = extract_filename_from_dir($file);
+		my $filename = extract_filename_from_dir($file);
+		my $dest_file = "$ds/$filename";
+		while(-f "$dest_file"){
+			$dest_file = s/(?<=\/)*([^\/]+)\.([^\/]+$)//g;
+		}
 		print "copying $file to $ds\n";
-		copy("$file","$ds/$filename");
+		copy("$file","$dest_file");
 	}
 }
 
